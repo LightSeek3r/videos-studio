@@ -1,0 +1,17 @@
+# Temp processing files
+temp/
+
+# Python
+__pycache__/
+*.pyc
+
+# Input/output (user data)
+input/*
+!input/.gitkeep
+output/*
+!output/.gitkeep
+
+# Vendor binaries (large, not for git)
+vendor/*.exe
+vendor/*.dll
+vendor/models/*.bin
