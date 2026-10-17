@@ -1,59 +1,41 @@
-# Video Remaster
+# anime-restorer
 
-Upscale videos to 1080p (or 4K) using [RealESRGAN](https://github.com/xinntao/Real-ESRGAN) with GPU acceleration.
+Upscales videos to 1080p (or any height you set) with [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
+on the GPU, and rebuilds each one with all of its audio and subtitle tracks.
 
-## Quick Start
+## Quick start
 
-1. Place your video files in the **`input/`** folder
-2. Double-click **`Restore.bat`**
-3. Pick up your restored videos from the **`output/`** folder
+1. Install FFmpeg and put `realesrgan-ncnn-vulkan.exe` (with its `.dll` files) in `vendor/` and the
+   model `.bin` files in `vendor/models/`. The [main README](../README.md#anime-restorer) has the
+   download links.
+2. Place your videos in **`input/`**.
+3. Double-click **`Restore.bat`** (or run `python src/main.py`).
+4. Pick up the restored videos in **`output/`**, and compare sample frames in `samples/`.
 
-That's it. The script auto-detects resolution, frame rate, and audio streams.
-
-## Requirements
-
-| Tool | Required | Install |
-|------|----------|---------|
-| **Python 3.7+** | Yes | [python.org](https://www.python.org/downloads/) — check "Add to PATH" |
-| **FFmpeg** | Yes | `winget install Gyan.FFmpeg` or [ffmpeg.org](https://ffmpeg.org/download.html) |
-| **GPU (Vulkan)** | Recommended | NVIDIA or AMD GPU with up-to-date drivers |
-
-The `Restore.bat` script will check for missing dependencies and tell you exactly what to install.
-
-## What it Does
-
-1. Extracts frames from each video via FFmpeg
-2. Upscales frames using RealESRGAN (neural network super-resolution)
-3. Reconstructs the video with all original audio streams and subtitles preserved
-4. Cleans up temporary files automatically
+The script checks its dependencies first and says exactly what is missing.
 
 ## Settings
 
-Edit [`src/config.py`](src/config.py) to change:
+Edit [`src/config.py`](src/config.py): `TARGET_HEIGHT` (`1080`, or `2160` for 4K), `MODEL_NAME`
+(`realesr-animevideov3`), `OUTPUT_SUFFIX`, `BATCH_SIZE` and the rest are described in the
+[main README](../README.md#settings).
 
-- **`TARGET_HEIGHT`** — output resolution (default: `1080` for 1080p, set to `2160` for 4K)
-- **`MODEL_NAME`** — RealESRGAN model (default: `realesr-animevideov3`)
-- **`OUTPUT_SUFFIX`** — text appended to output filenames
-
-## Project Structure
+## Layout
 
 ```
-video-remaster/
-├── Restore.bat          # Double-click to run
-├── input/               # Place videos here
-├── output/              # Restored videos appear here
-├── src/                 # Application code
-│   ├── main.py          # Entry point
-│   ├── config.py        # Settings
-│   ├── dependencies.py  # Auto-checks for ffmpeg, python, GPU
-│   ├── video_processor.py  # Core upscaling pipeline
-│   └── utils.py         # Helpers (ffprobe, file discovery)
-├── vendor/              # RealESRGAN binaries & models
-└── temp/                # Auto-cleaned working directory
+anime-restorer/
+  Restore.bat           double-click launcher
+  input/                place videos here
+  output/               restored videos appear here
+  samples/              original/upscaled frame pairs, one every 1,000 frames
+  src/
+    main.py               entry point
+    config.py             settings
+    dependencies.py       checks Python, FFmpeg, ffprobe, Real-ESRGAN and the GPU
+    video_processor.py    extract, upscale in batches, assemble
+    utils.py              ffprobe helpers, file discovery
+  vendor/               realesrgan-ncnn-vulkan and its models
+  temp/                 working directory, emptied as the work progresses
 ```
 
-## Notes
-
-- **Disk space**: Frame extraction requires ~3-4x the original video size in temporary storage. Files are cleaned up after each video.
-- **Processing time**: Depends on video length, resolution, and GPU. A 1080p target from 480p source on a mid-range GPU takes roughly real-time to 3x video duration.
-- **Audio**: All audio streams from the original file are preserved automatically. No separate audio merging step needed.
+Frames are extracted as PNG files before upscaling, so keep plenty of free disk space.
