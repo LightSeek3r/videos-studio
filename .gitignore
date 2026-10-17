@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Tool output and working files (anime-restorer/.gitignore covers input/ and output/)
+anime-restorer/temp/
+anime-restorer/samples/
+anime-restorer/vendor/*.exe
+anime-restorer/vendor/*.dll
+anime-restorer/vendor/models/*.bin
+
+# Media files: never commit video you are processing
+*.mkv
+*.mp4
+*.m4v
+*.avi
+*.mov
+*.webm
+*.ts
+*.vob
+
+# Local notes and assistant files
+.claude/
+CLAUDE.md
+tasks/
+instructions.md
+.env
+.env.*
+.dev.vars
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
